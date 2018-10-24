@@ -4,7 +4,7 @@ from __future__ import division
 from math import exp
 import numpy as np
 from numpy import *
-from random import normalvariate#ÕıÌ¬·Ö²¼
+from random import normalvariate#æ­£æ€åˆ†å¸ƒ
 from datetime import datetime
 
 trainData = 'diabetes_train.txt'
@@ -33,14 +33,14 @@ def loadTrainDataSet(data):
     dataMat = []
     labelMat = []
     
-    fr = open(data)#´ò¿ªÎÄ¼ş
+    fr = open(data)#æ‰“å¼€æ–‡ä»¶
     
     for line in fr.readlines():
         currLine = line.strip().split(',')
         #lineArr = [1.0]
         lineArr = []
         
-        for i in xrange(featureNum):
+        for i in range(featureNum):
             lineArr.append(float(currLine[i]))
 
         dataMat.append(lineArr)
@@ -63,13 +63,13 @@ def loadTestDataSet(data):
     dataMat = []
     labelMat = []
     
-    fr = open(data)#´ò¿ªÎÄ¼ş
+    fr = open(data)#æ‰“å¼€æ–‡ä»¶
     
     for line in fr.readlines():
         currLine = line.strip().split(',')
         lineArr = []
         
-        for i in xrange(featureNum):
+        for i in range(featureNum):
             lineArr.append(float(currLine[i]))
 
         dataMat.append(lineArr)
@@ -89,34 +89,34 @@ def sigmoid(inx):
     #return 1.0 / (1 + exp(-inx))
 
 def stocGradAscent(dataMatrix, classLabels, k, iter):
-    #dataMatrixÓÃµÄÊÇmat, classLabelsÊÇÁĞ±í
+    #dataMatrixç”¨çš„æ˜¯mat, classLabelsæ˜¯åˆ—è¡¨
     m, n = shape(dataMatrix)
     alpha = 0.01
-    #³õÊ¼»¯²ÎÊı
-    #w = random.randn(n, 1)#ÆäÖĞnÊÇÌØÕ÷µÄ¸öÊı
+    #åˆå§‹åŒ–å‚æ•°
+    #w = random.randn(n, 1)#å…¶ä¸­næ˜¯ç‰¹å¾çš„ä¸ªæ•°
     w = zeros((n, 1))
     w_0 = 0.
     v = normalvariate(0, 0.2) * ones((n, k))
     
-    for it in xrange(iter):
-        print it
-        for x in xrange(m):#Ëæ»úÓÅ»¯£¬¶ÔÃ¿Ò»¸öÑù±¾¶øÑÔµÄ
+    for it in range(iter):
+        print(it)
+        for x in range(m):#éšæœºä¼˜åŒ–ï¼Œå¯¹æ¯ä¸€ä¸ªæ ·æœ¬è€Œè¨€çš„
             inter_1 = dataMatrix[x] * v
-            inter_2 = multiply(dataMatrix[x], dataMatrix[x]) * multiply(v, v)#multiply¶ÔÓ¦ÔªËØÏà³Ë
-            #Íê³É½»²æÏî
+            inter_2 = multiply(dataMatrix[x], dataMatrix[x]) * multiply(v, v)#multiplyå¯¹åº”å…ƒç´ ç›¸ä¹˜
+            #å®Œæˆäº¤å‰é¡¹
             interaction = sum(multiply(inter_1, inter_1) - inter_2) / 2.
             
-            p = w_0 + dataMatrix[x] * w + interaction#¼ÆËãÔ¤²âµÄÊä³ö
+            p = w_0 + dataMatrix[x] * w + interaction#è®¡ç®—é¢„æµ‹çš„è¾“å‡º
             #print "y: ",p 
             loss = sigmoid(classLabels[x] * p[0, 0]) - 1
             #print "loss: ",loss
         
             w_0 = w_0 - alpha * loss * classLabels[x]
             
-            for i in xrange(n):
+            for i in range(n):
                 if dataMatrix[x, i] != 0:
                     w[i, 0] = w[i, 0] - alpha * loss * classLabels[x] * dataMatrix[x, i]
-                    for j in xrange(k):
+                    for j in range(k):
                         v[i, j] = v[i, j] - alpha * loss * classLabels[x] * (dataMatrix[x, i] * inter_1[0, j] - v[i, j] * dataMatrix[x, i] * dataMatrix[x, i])
         
     
@@ -127,13 +127,13 @@ def getAccuracy(dataMatrix, classLabels, w_0, w, v):
     allItem = 0
     error = 0
     result = []
-    for x in xrange(m):
+    for x in range(m):
         allItem += 1
         inter_1 = dataMatrix[x] * v
-        inter_2 = multiply(dataMatrix[x], dataMatrix[x]) * multiply(v, v)#multiply¶ÔÓ¦ÔªËØÏà³Ë
-        #Íê³É½»²æÏî
+        inter_2 = multiply(dataMatrix[x], dataMatrix[x]) * multiply(v, v)#multiplyå¯¹åº”å…ƒç´ ç›¸ä¹˜
+        #å®Œæˆäº¤å‰é¡¹
         interaction = sum(multiply(inter_1, inter_1) - inter_2) / 2.
-        p = w_0 + dataMatrix[x] * w + interaction#¼ÆËãÔ¤²âµÄÊä³ö
+        p = w_0 + dataMatrix[x] * w + interaction#è®¡ç®—é¢„æµ‹çš„è¾“å‡º
         
         pre = sigmoid(p[0, 0])
         
@@ -147,7 +147,7 @@ def getAccuracy(dataMatrix, classLabels, w_0, w, v):
             continue
         
     
-    print result
+    print(result)
     
     return float(error) / allItem
         
@@ -156,10 +156,10 @@ if __name__ == '__main__':
     dataTrain, labelTrain = loadTrainDataSet(trainData)
     dataTest, labelTest = loadTestDataSet(testData)
     date_startTrain = datetime.now()
-    print "¿ªÊ¼ÑµÁ·"
+    print("å¼€å§‹è®­ç»ƒ")
     w_0, w, v = stocGradAscent(mat(dataTrain), labelTrain, 20, 200)
-    print "ÑµÁ·×¼È·ĞÔÎª£º%f" % (1 - getAccuracy(mat(dataTrain), labelTrain, w_0, w, v))
+    print("è®­ç»ƒå‡†ç¡®æ€§ä¸ºï¼š%f" % (1 - getAccuracy(mat(dataTrain), labelTrain, w_0, w, v)))
     date_endTrain = datetime.now()
-    print "ÑµÁ·Ê±¼äÎª£º%s" % (date_endTrain - date_startTrain)
-    print "¿ªÊ¼²âÊÔ"
-    print "²âÊÔ×¼È·ĞÔÎª£º%f" % (1 - getAccuracy(mat(dataTest), labelTest, w_0, w, v))  
+    print("è®­ç»ƒæ—¶é—´ä¸ºï¼š%s" % (date_endTrain - date_startTrain))
+    print("å¼€å§‹æµ‹è¯•")
+    print("æµ‹è¯•å‡†ç¡®æ€§ä¸ºï¼š%f" % (1 - getAccuracy(mat(dataTest), labelTest, w_0, w, v)))
